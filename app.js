@@ -249,7 +249,14 @@
     try{
       const c=client();let result;
       if(state.mode==="signup"){
-        result=await c.auth.signUp({email:$("email").value.trim(),password:$("password").value,options:{data:{display_name:$("displayName").value.trim()}}});
+       result=await c.auth.signUp({
+  email:$("email").value.trim(),
+  password:$("password").value,
+  options:{
+    data:{display_name:$("displayName").value.trim()},
+    emailRedirectTo:window.location.origin+window.location.pathname
+  }
+});
         if(result.error)throw result.error;
         if(result.data.session)showApp(result.data.user);else notice("Cadastro criado! Confira seu e-mail para confirmar a conta antes de entrar.","success");
       }else{
