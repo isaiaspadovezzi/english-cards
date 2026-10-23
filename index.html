@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f7f8fc">
+  <meta name="description" content="Seu caderno pessoal para aprender inglês com cards, áudio e exercícios.">
+  <title>English Cards</title>
+  <link rel="stylesheet" href="./style.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="./config.js"></script>
+  <script defer src="./app.js"></script>
+</head>
+<body>
+  <main id="authLayout" class="auth-layout">
+    <section class="welcome">
+      <div class="brand">English<span>Cards</span> ✦</div>
+      <h1>Seu inglês.<br>Seu ritmo.</h1>
+      <p>Aprenda palavras e expressões reais com cards, exemplos práticos, áudio e revisões personalizadas.</p>
+      <div class="features">
+        <div class="feature">🎧 Áudio em inglês e modo escuta</div>
+        <div class="feature">🧠 Revisões inteligentes: difícil, bom ou fácil</div>
+        <div class="feature">🤝 Vocabulário pessoal e compartilhado</div>
+      </div>
+    </section>
+    <section class="auth-side">
+      <div class="auth-card">
+        <h2 id="formTitle">Bem-vindo!</h2>
+        <p class="muted" id="formDescription">Entre na sua conta para acessar seu vocabulário.</p>
+        <div class="tabs">
+          <button class="tab active" id="loginTab" type="button">Entrar</button>
+          <button class="tab" id="signupTab" type="button">Criar conta</button>
+        </div>
+        <form id="authForm">
+          <div class="field" id="nameField" hidden>
+            <label for="displayName">Como podemos chamar você?</label>
+            <input id="displayName" type="text" autocomplete="name" placeholder="Seu nome">
+          </div>
+          <div class="field">
+            <label for="email">E-mail</label>
+            <input id="email" type="email" autocomplete="email" placeholder="voce@exemplo.com" required>
+          </div>
+          <div class="field">
+            <label for="password">Senha</label>
+            <input id="password" type="password" autocomplete="current-password" minlength="8" placeholder="Mínimo de 8 caracteres" required>
+          </div>
+          <button class="primary-button" id="submitButton" type="submit">Entrar</button>
+        </form>
+        <button class="forgot" id="forgotButton" type="button">Esqueci minha senha</button>
+        <div class="notice" id="notice" role="status" aria-live="polite"></div>
+        <p class="privacy">🔒 Cada conta terá seu próprio vocabulário.<br>O compartilhamento de palavras será opcional.</p>
+      </div>
+    </section>
+  </main>
+
+  <main id="appLayout" class="app-layout" hidden>
+    <header class="app-header">
+      <div>
+        <div class="brand dark">English<span>Cards</span> ✦</div>
+        <p class="muted" id="userGreeting">Seu espaço de estudos</p>
+      </div>
+      <button class="secondary-button" id="logoutButton">Sair da conta</button>
+    </header>
+    <nav class="nav-tabs" aria-label="Seções do aplicativo">
+      <button class="nav-tab active" data-page="cards">🗂️ Cards</button>
+      <button class="nav-tab" data-page="listen">🎧 Modo Escuta</button>
+      <button class="nav-tab" data-page="games">🧩 Exercícios</button>
+      <button class="nav-tab" data-page="vocabulary">📚 Vocabulário</button>
+    </nav>
+    <section id="page-cards" class="page">
+      <div class="section-heading">
+        <div><h1>Meus cards</h1><p class="muted">Revise e aprenda no seu ritmo.</p></div>
+        <button class="primary-button compact" id="newCardButton">+ Novo card</button>
+      </div>
+      <div id="cardEditor" class="panel" hidden>
+        <h2>Adicionar vocabulário</h2>
+        <form id="cardForm" class="editor-grid">
+          <div class="field"><label for="english">Palavra ou expressão em inglês *</label><input id="english" required placeholder="e.g. get by"></div>
+          <div class="field"><label for="portuguese">Tradução em português *</label><input id="portuguese" required placeholder="e.g. conseguir se virar"></div>
+          <div class="field"><label for="targetPhrase">Expressão-chave (pode corrigir)</label><input id="targetPhrase" placeholder="Deixe em branco para detectar automaticamente"></div>
+          <div class="field"><label for="category">Categoria</label><input id="category" placeholder="Geral"></div>
+          <div class="field"><label for="example1En">Exemplo 1 em inglês</label><input id="example1En"></div>
+          <div class="field"><label for="example1Pt">Tradução do exemplo 1</label><input id="example1Pt"></div>
+          <div class="field"><label for="example2En">Exemplo 2 em inglês</label><input id="example2En"></div>
+          <div class="field"><label for="example2Pt">Tradução do exemplo 2</label><input id="example2Pt"></div>
+          <div class="field full"><label for="notes">Observações (opcional)</label><input id="notes"></div>
+          <div class="form-actions full"><button class="primary-button compact" type="submit">Salvar card</button><button class="secondary-button" id="cancelCardButton" type="button">Cancelar</button></div>
+        </form>
+      </div>
+      <div class="toolbar"><input id="cardSearch" placeholder="Buscar palavra ou tradução…"><label class="toggle"><input id="favoritesOnly" type="checkbox"> Só favoritos ⭐</label></div>
+      <div id="cardsList" class="cards-list"></div>
+      <p id="cardsEmpty" class="empty-state">Entre na sua conta e adicione sua primeira palavra.</p>
+    </section>
+    <section id="page-listen" class="page" hidden>
+      <h1>Modo Escuta 🎧</h1>
+      <p class="muted">Ouça inglês, significado em português e exemplos em sequência, sem precisar olhar para a tela.</p>
+      <div class="panel listen-panel">
+        <label class="toggle"><input id="speakPortuguese" type="checkbox" checked> Incluir áudio em português</label>
+        <div class="field"><label for="listenSpeed">Velocidade: <span id="speedLabel">0.85×</span></label><input id="listenSpeed" type="range" min="0.6" max="1.2" step="0.05" value="0.85"></div>
+        <div class="field"><label for="repeatCount">Repetições em inglês</label><select id="repeatCount"><option value="1">1 vez</option><option value="2" selected>2 vezes</option><option value="3">3 vezes</option></select></div>
+        <div class="listen-actions"><button class="primary-button compact" id="playListen">▶ Começar</button><button class="secondary-button" id="stopListen">■ Parar</button></div>
+        <p id="listenStatus" class="muted">Adicione cards para começar.</p>
+      </div>
+    </section>
+    <section id="page-games" class="page" hidden>
+      <h1>Exercícios 🧩</h1>
+      <p class="muted">Pratique com seu próprio vocabulário. Mais tipos de exercício serão adicionados nas próximas versões.</p>
+      <div class="panel">
+        <h2>Tradução rápida</h2><p id="quizQuestion">Adicione pelo menos um card para começar.</p>
+        <input id="quizAnswer" placeholder="Digite a tradução em português">
+        <div class="form-actions"><button id="checkQuiz" class="primary-button compact">Conferir</button><button id="nextQuiz" class="secondary-button">Próxima</button></div>
+        <p id="quizFeedback" class="muted"></p>
+      </div>
+    </section>
+    <section id="page-vocabulary" class="page" hidden>
+      <div class="section-heading"><div><h1>Vocabulário 📚</h1><p class="muted">Pesquise, importe e exporte seus cards.</p></div><div class="form-actions"><button id="exportCsv" class="secondary-button">Exportar CSV</button><label class="secondary-button file-button">Importar CSV<input id="importCsv" type="file" accept=".csv,text/csv" hidden></label></div></div>
+      <p class="muted">O CSV deve conter as colunas: english, portuguese, target_phrase, example1_en, example1_pt, example2_en, example2_pt, category, notes.</p>
+      <div id="vocabularyList" class="vocabulary-list"></div>
+    </section>
+  </main>
+</body>
+</html>
