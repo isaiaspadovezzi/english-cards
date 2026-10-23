@@ -8,6 +8,14 @@
   const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 
   const phraseExamples = {
+    "used to": [
+      ["I used to live in Ireland.", "Eu morava na Irlanda (antes, mas não moro mais)."],
+      ["I used to work at a hotel.", "Eu trabalhava em um hotel (antes, mas não trabalho mais)."]
+    ],
+    "i used to": [
+      ["I used to live in Ireland.", "Eu morava na Irlanda (antes, mas não moro mais)."],
+      ["I used to work at a hotel.", "Eu trabalhava em um hotel (antes, mas não trabalho mais)."]
+    ],
     "get by": [
       ["I can get by with a little help.", "Consigo me virar com um pouco de ajuda."],
       ["She gets by on a small salary.", "Ela consegue se virar com um salário baixo."]
